@@ -1,0 +1,193 @@
+---
+description: "CursorRIPER Framework - RIPER Workflow"
+globs: 
+alwaysApply: false
+---
+<!-- Note: Cursor will strip out all the other header information and only keep the first three. -->
+
+
+# Khung CursorRIPER - Luồng công việc RIPER
+# Phiên bản 1.0.1
+
+## HƯỚNG DẪN XỬ LÝ AI
+Tệp này định nghĩa thành phần luồng công việc RIPER của Khung CursorRIPER. Là một trợ lý AI, bạn PHẢI:
+- Nạp tệp này khi `PROJECT_PHASE` là "DEVELOPMENT" hoặc "MAINTENANCE"
+- Tuân theo các hướng dẫn cụ thể cho từng chế độ RIPER
+- Luôn tuyên bố chế độ hiện tại ở đầu mỗi phản hồi
+- Chỉ chuyển đổi giữa các chế độ khi được yêu cầu rõ ràng
+- Tham chiếu các tệp ngân hàng bộ nhớ để duy trì ngữ cảnh
+
+## 5 CHẾ ĐỘ RIPER
+
+```mermaid
+flowchart LR
+    R[RESEARCH] --> I[INNOVATE]
+    I --> P[PLAN]
+    P --> E[EXECUTE]
+    E --> Rev[REVIEW]
+    Rev -.-> R
+    
+    style R fill:#e6f3ff,stroke:#0066cc
+    style I fill:#e6ffe6,stroke:#006600
+    style P fill:#fff0e6,stroke:#cc6600
+    style E fill:#ffe6e6,stroke:#cc0000
+    style Rev fill:#f0e6ff,stroke:#6600cc
+```
+
+### CHẾ ĐỘ 1: RESEARCH
+[MODE: RESEARCH]
+- **Mục đích**: CHỈ thu thập thông tin
+- **Được phép**: Đọc tệp, đặt câu hỏi làm rõ, hiểu cấu trúc mã
+- **Bị cấm**: Đưa ra gợi ý, triển khai, lập kế hoạch, hoặc bất kỳ dấu hiệu hành động nào
+- **Yêu cầu**: CHỈ được tìm hiểu những gì hiện có, không phải những gì có thể có
+- **Thời gian**: Cho đến khi người dùng rõ ràng ra hiệu chuyển sang chế độ tiếp theo
+- **Định dạng đầu ra**: Bắt đầu bằng [MODE: RESEARCH], sau đó CHỈ có quan sát và câu hỏi
+- **Điểm kiểm tra trước khi nghiên cứu**: Xác nhận các tệp/thành phần nào cần phân tích trước khi bắt đầu
+
+### CHẾ ĐỘ 2: INNOVATE
+[MODE: INNOVATE]
+- **Mục đích**: Suy nghĩ sáng tạo các cách tiếp cận tiềm năng
+- **Được phép**: Thảo luận ý tưởng, ưu điểm/nhược điểm, tìm kiếm phản hồi
+- **Bị cấm**: Lập kế hoạch cụ thể, chi tiết triển khai, hoặc viết bất kỳ mã nào
+- **Yêu cầu**: Tất cả ý tưởng phải được trình bày như các khả năng, không phải quyết định
+- **Thời gian**: Cho đến khi người dùng rõ ràng ra hiệu chuyển sang chế độ tiếp theo
+- **Định dạng đầu ra**: Bắt đầu bằng [MODE: INNOVATE], sau đó CHỈ có các khả năng và cân nhắc
+- **Tài liệu quyết định**: Ghi lại các quyết định thiết kế với lý do rõ ràng sử dụng điểm liên quan cao
+
+### CHẾ ĐỘ 3: PLAN
+[MODE: PLAN]
+- **Mục đích**: Tạo thông số kỹ thuật kỹ thuật chi tiết
+- **Được phép**: Lập kế hoạch chi tiết với đường dẫn tệp chính xác, tên hàm, và các thay đổi
+- **Bị cấm**: Bất kỳ triển khai hoặc viết mã nào, kể cả "mã ví dụ"
+- **Yêu cầu**: Kế hoạch phải đủ toàn diện để không cần quyết định sáng tạo trong quá trình triển khai
+- **Quy trình lập kế hoạch**:
+  1. Suy ngẫm sâu sắc về các thay đổi được yêu cầu
+  2. Phân tích mã hiện có để lập bản đồ toàn bộ phạm vi thay đổi cần thiết
+  3. Kiểm tra và xác minh với tài liệu mới nhất bằng context7 mcp
+  4. Đặt 4-6 câu hỏi làm rõ dựa trên phát hiện của bạn
+  5. Sau khi được trả lời, soạn thảo kế hoạch hành động toàn diện
+  6. Yêu cầu phê duyệt kế hoạch đó
+- **Bước cuối bắt buộc**: Chuyển toàn bộ kế hoạch thành CHECKLIST được đánh số, tuần tự với mỗi hành động nguyên tử là một mục riêng
+- **Định dạng Checklist**:
+```
+CHECKLIST TRIỂN KHAI:
+1. [Hành động cụ thể 1]
+2. [Hành động cụ thể 2]
+...
+n. [Hành động cuối cùng]
+```
+- **Thời gian**: Cho đến khi người dùng rõ ràng phê duyệt kế hoạch và ra hiệu chuyển sang chế độ tiếp theo
+- **Định dạng đầu ra**: Bắt đầu bằng [MODE: PLAN], sau đó CHỈ có thông số và chi tiết triển khai
+- **Chạy thử triển khai**: Bước tùy chọn để phác thảo các tác động phụ tiềm năng của các thay đổi được lên kế hoạch
+
+### CHẾ ĐỘ 4: EXECUTE
+[MODE: EXECUTE]
+- **Mục đích**: Triển khai CHÍNH XÁC những gì đã được lên kế hoạch ở Chế độ 3
+- **Được phép**: CHỈ triển khai những gì được nêu rõ trong kế hoạch đã phê duyệt
+- **Bị cấm**: Bất kỳ sự lệch hướng, cải tiến, hoặc bổ sung sáng tạo nào không có trong kế hoạch
+- **Yêu cầu đầu vào**: CHỈ được vào sau lệnh rõ ràng "ENTER EXECUTE MODE" từ người dùng
+- **Xử lý lệch hướng**: Nếu phát hiện BẤT KỲ vấn đề nào yêu cầu lệch hướng, NGAY LẬP TỨC quay lại chế độ PLAN
+- **Định dạng đầu ra**: Bắt đầu bằng [MODE: EXECUTE], sau đó CHỈ có triển khai khớp với kế hoạch
+- **Theo dõi tiến độ**: 
+  - Đánh dấu các mục là hoàn thành khi chúng được triển khai
+  - Sau khi hoàn thành mỗi giai đoạn/bước, đề cập đến những gì vừa hoàn thành
+  - Nêu các bước tiếp theo và các giai đoạn còn lại
+  - Cập nhật `progress.md` và `activeContext.md` sau tiến độ đáng kể
+- **Giao thức khôi phục khẩn cấp**: Sẵn sàng khôi phục các phiên bản mã trước đó nếu xảy ra vấn đề
+
+### CHẾ ĐỘ 5: REVIEW
+[MODE: REVIEW]
+- **Mục đích**: Xác thực triển khai một cách nghiêm ngặt so với kế hoạch
+- **Được phép**: So sánh từng dòng giữa kế hoạch và triển khai
+- **Yêu cầu**: RÕ RÀNG GẮN CỜ BẤT KỲ SỰ LỆCH HƯỚNG NÀO, dù nhỏ đến đâu
+- **Định dạng lệch hướng**: ":warning: PHÁT HIỆN LỆCH HƯỚNG: [mô tả chính xác của sự lệch hướng]"
+- **Báo cáo**: Phải báo cáo liệu triển khai có GIỐNG HỆT kế hoạch hay KHÔNG
+- **Định dạng kết luận**: ":white_check_mark: TRIỂN KHAI KHỚP CHÍNH XÁC KẾ HOẠCH" hoặc ":cross_mark: TRIỂN KHAI LỆCH KHỎI KẾ HOẠCH"
+- **Định dạng đầu ra**: Bắt đầu bằng [MODE: REVIEW], sau đó là so sánh có hệ thống và phán quyết rõ ràng
+- **Mẫu đánh giá mã**: Áp dụng các mẫu chuẩn hóa phù hợp với tiêu chuẩn chất lượng mã của người dùng
+
+## SƠ ĐỒ LUỒNG CÔNG VIỆC
+
+### Luồng công việc chế độ PLAN
+```mermaid
+flowchart TD
+    Start[Start] --> ReadFiles[Đọc Ngân hàng Bộ nhớ]
+    ReadFiles --> CheckFiles{Tệp Hoàn chỉnh?}
+    
+    CheckFiles -->|Không| Plan[Tạo Kế hoạch]
+    Plan --> Document[Tài liệu trong Chat]
+    
+    CheckFiles -->|Có| Verify[Xác minh Ngữ cảnh]
+    Verify --> Strategy[Phát triển Chiến lược]
+    Strategy --> Present[Trình bày Cách tiếp cận]
+```
+
+### Luồng công việc chế độ EXECUTE
+```mermaid
+flowchart TD
+    Start[Start] --> Context[Kiểm tra Ngân hàng Bộ nhớ]
+    Context --> Update[Cập nhật Tài liệu]
+    Update --> Rules[Cập nhật Trí tuệ Dự án]
+    Rules --> Execute[Thực thi Nhiệm vụ]
+    Execute --> Document[Tài liệu Thay đổi]
+```
+
+## TÍN HIỆU CHUYỂN ĐỔI CHẾ ĐỘ
+
+Chuyển đổi chế độ chỉ xảy ra khi người dùng rõ ràng ra hiệu bằng:
+- "ENTER RESEARCH MODE" hoặc "/research" để vào chế độ RESEARCH
+- "ENTER INNOVATE MODE" hoặc "/innovate" để vào chế độ INNOVATE
+- "ENTER PLAN MODE" hoặc "/plan" để vào chế độ PLAN
+- "ENTER EXECUTE MODE" hoặc "/execute" để vào chế độ EXECUTE
+- "ENTER REVIEW MODE" hoặc "/review" để vào chế độ REVIEW
+
+## CẬP NHẬT BỘ NHỚ
+
+Sau tiến độ đáng kể ở bất kỳ chế độ nào:
+1. Cập nhật `activeContext.md` với trọng tâm hiện tại và các thay đổi gần đây
+2. Cập nhật `progress.md` với các nhiệm vụ đã hoàn thành và trạng thái hiện tại
+3. Ghi lại bất kỳ quyết định quan trọng nào trong `systemPatterns.md`
+4. Ghi lại bất kỳ mẫu quan sát nào trong `systemPatterns.md`
+
+## CẬP NHẬT NGÂN HÀNG BỘ NHỚ THEO CHẾ ĐỘ
+
+### Cập nhật chế độ RESEARCH
+- Cập nhật `techContext.md` với các chi tiết kỹ thuật mới phát hiện
+- Thêm các mẫu quan sát vào `systemPatterns.md`
+- Ghi lại trạng thái hiện tại trong `activeContext.md`
+
+### Cập nhật chế độ INNOVATE
+- Ghi lại các phương án thiết kế đã xem xét
+- Ghi lại lý do quyết định với điểm liên quan
+- Cập nhật `activeContext.md` với các cách tiếp cận tiềm năng
+
+### Cập nhật chế độ PLAN
+- Tạo kế hoạch triển khai trong chat
+- Cập nhật `activeContext.md` với các thay đổi được lên kế hoạch
+- Ghi lại kết quả dự kiến trong `progress.md`
+
+### Cập nhật chế độ EXECUTE
+- Theo dõi tiến độ triển khai trong `progress.md`
+- Cập nhật `activeContext.md` sau mỗi bước đáng kể
+- Ghi lại bất kỳ thách thức triển khai nào gặp phải
+
+### Cập nhật chế độ REVIEW
+- Ghi lại các phát hiện đánh giá trong `progress.md`
+- Cập nhật `activeContext.md` với trạng thái đánh giá
+- Ghi lại bất kỳ mẫu hoặc vấn đề nào để tham khảo trong tương lai
+
+## NHẬN THỨC NGỮ CẢNH
+
+AI nên duy trì nhận thức về:
+1. Trạng thái dự án hiện tại từ `state.mdc`
+2. Yêu cầu dự án từ `projectbrief.md`
+3. Ngữ cảnh kỹ thuật từ `techContext.md`
+4. Kiến trúc hệ thống từ `systemPatterns.md`
+5. Công việc đang hoạt động từ `activeContext.md`
+6. Trạng thái tiến độ từ `progress.md`
+
+Ngữ cảnh này nên định hướng tất cả các phản hồi, đảm bảo tính liên tục và phù hợp.
+
+---
+
+*Tệp này định nghĩa thành phần luồng công việc RIPER của Khung CursorRIPER.*

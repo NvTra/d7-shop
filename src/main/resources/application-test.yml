@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/d7shop_test}
+    username: ${DB_USERNAME:d7shop_dev}
+    password: ${DB_PASSWORD:dev_password}
+    
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:create-drop}
+    show-sql: ${JPA_SHOW_SQL:true}
+    
+  flyway:
+    enabled: ${FLYWAY_ENABLED:false}
+    
+  security:
+    jwt:
+      secret: ${JWT_SECRET:test_jwt_secret_key}
+      expiration: ${JWT_EXPIRATION:86400000}
+      
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:DEBUG}
+    com.tranv.d7shop: ${LOG_LEVEL_APP:DEBUG}
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:DEBUG} 

@@ -1,0 +1,367 @@
+---
+description: "CursorRIPER Framework - START Phase"
+globs: 
+alwaysApply: false
+version: "1.0.1"
+date_created: "2025-04-05"
+last_updated: "2025-04-06"
+framework_component: "start_phase"
+priority: "high"
+scope: "initialization"
+archive_after_completion: true
+---
+<!-- Note: Cursor will strip out all the other header information and only keep the first three. -->
+# Khung CursorRIPER - Giai đoạn START
+# Phiên bản 1.0.1
+
+## HƯỚNG DẪN XỬ LÝ AI
+Tệp này định nghĩa thành phần giai đoạn START của Khung CursorRIPER. Là một trợ lý AI, bạn PHẢI:
+- Nạp tệp này khi `PROJECT_PHASE` là "UNINITIATED" hoặc "INITIALIZING"
+- Hướng dẫn người dùng qua quá trình khởi tạo dự án theo từng bước
+- Tạo tất cả các tệp ngân hàng bộ nhớ cần thiết với định dạng phù hợp
+- Cập nhật `state.mdc` khi mỗi bước hoàn thành
+- Lưu trữ thành phần này sau khi quá trình khởi tạo hoàn tất
+
+## TỔNG QUAN GIAI ĐOẠN START
+
+Giai đoạn START là một giai đoạn tiền xử lý chỉ thực hiện một lần, chạy khi bắt đầu một dự án mới hoặc thành phần chính. Nó tập trung vào khởi tạo dự án, dựng khung và thiết lập Ngân hàng Bộ nhớ với thông tin cơ bản.
+
+```mermaid
+flowchart TD
+    Start[BEGIN START PHASE] --> Req[Thu thập Yêu cầu]
+    Req --> Tech[Lựa chọn Công nghệ]
+    Tech --> Arch[Định nghĩa Kiến trúc]
+    Arch --> Scaffold[Dựng khung Dự án]
+    Scaffold --> Setup[Thiết lập Môi trường]
+    Setup --> Memory[Khởi tạo Ngân hàng Bộ nhớ]
+    Memory --> End[CHUYỂN SANG RIPER]
+```
+
+## QUY TRÌNH GIAI ĐOẠN START
+
+[PHASE: START]
+- **Mục đích**: Khởi tạo và dựng khung dự án
+- **Được phép**: Thu thập yêu cầu, lựa chọn công nghệ, định nghĩa kiến trúc, thiết lập cấu trúc dự án
+- **Điểm vào**: Lệnh người dùng "BEGIN START PHASE" hoặc "/start"
+- **Điểm ra**: Tự động chuyển sang chế độ RESEARCH sau khi thiết lập hoàn tất
+
+## KHỞI TẠO TỪNG BƯỚC
+
+### Bước 1: Thu thập Yêu cầu
+- Thu thập và ghi lại các yêu cầu cốt lõi của dự án
+- Xác định phạm vi, mục tiêu và ràng buộc của dự án
+- Xác định các bên liên quan chính và nhu cầu của họ
+- Ghi lại tiêu chí thành công
+- **Các câu hỏi chính**:
+  - Dự án này đang cố gắng giải quyết vấn đề gì?
+  - Ai là người dùng chính hoặc các bên liên quan?
+  - Những tính năng bắt buộc phải có là gì?
+  - Những tính năng mong muốn nhưng không bắt buộc là gì?
+  - Có những ràng buộc kỹ thuật nào?
+  - Thời hạn hoàn thành là bao lâu?
+- **Kết quả**: Tạo `projectbrief.md` với các yêu cầu đã thu thập
+
+### Bước 2: Lựa chọn Công nghệ
+- Đánh giá các tùy chọn công nghệ dựa trên yêu cầu
+- Đánh giá các framework, thư viện và công cụ
+- Đưa ra khuyến nghị với lý do rõ ràng
+- Ghi lại các quyết định công nghệ
+- **Các câu hỏi chính**:
+  - Ngôn ngữ lập trình nào phù hợp nhất với dự án này?
+  - Framework hoặc thư viện nào sẽ phù hợp nhất?
+  - Công nghệ cơ sở dữ liệu nào nên sử dụng?
+  - Môi trường triển khai mục tiêu là gì?
+  - Có yêu cầu hiệu suất cụ thể nào không?
+  - Framework kiểm thử nào nên sử dụng?
+- **Kết quả**: Thêm các quyết định công nghệ vào `techContext.md`
+
+### Bước 3: Định nghĩa Kiến trúc
+- Định nghĩa kiến trúc hệ thống cấp cao
+- Xác định các thành phần chính và mối quan hệ của chúng
+- Tạo sơ đồ kiến trúc ban đầu
+- Ghi lại các quyết định kiến trúc
+- **Các câu hỏi chính**:
+  - Mẫu kiến trúc nào là phù hợp nhất?
+  - Ứng dụng sẽ được cấu trúc như thế nào?
+  - Các thành phần chính và trách nhiệm của chúng là gì?
+  - Dữ liệu sẽ luân chuyển trong hệ thống như thế nào?
+  - Hệ thống sẽ mở rộng quy mô như thế nào?
+  - Những cân nhắc bảo mật nào cần được giải quyết?
+- **Kết quả**: Tạo `systemPatterns.md` với định nghĩa kiến trúc
+
+### Bước 4: Dựng khung Dự án
+- Thiết lập cấu trúc thư mục ban đầu
+- Tạo các tệp cấu hình
+- Khởi tạo kiểm soát phiên bản
+- Thiết lập quản lý gói
+- Tạo README ban đầu và tài liệu
+- **Các hành động chính**:
+  - Tạo cấu trúc thư mục cơ bản
+  - Khởi tạo kho git
+  - Thiết lập trình quản lý gói (npm, pip, v.v.)
+  - Tạo các tệp cấu hình ban đầu
+  - Thiết lập quy trình xây dựng cơ bản
+- **Kết quả**: Tạo khung dự án theo cấu trúc đã định nghĩa
+
+### Bước 5: Thiết lập Môi trường
+- Cấu hình môi trường phát triển
+- Thiết lập framework kiểm thử
+- Thiết lập cấu hình pipeline CI/CD
+- Xác định chiến lược triển khai
+- **Các hành động chính**:
+  - Thiết lập môi trường phát triển cục bộ
+  - Cấu hình framework kiểm thử
+  - Tạo các trường hợp kiểm thử ban đầu
+  - Xác định pipeline CI/CD
+  - Ghi lại quy trình triển khai
+- **Kết quả**: Cập nhật `techContext.md` với chi tiết thiết lập môi trường
+
+### Bước 6: Khởi tạo Ngân hàng Bộ nhớ
+- Tạo và điền nội dung cho tất cả các tệp bộ nhớ cốt lõi:
+  - `projectbrief.md` (nếu chưa được tạo)
+  - `systemPatterns.md` (nếu chưa được tạo)
+  - `techContext.md` (nếu chưa được tạo)
+  - `activeContext.md`
+  - `progress.md`
+- Thiết lập các tệp trí tuệ dự án ban đầu
+- **Các hành động chính**:
+  - Tạo cấu trúc thư mục `memory-bank`
+  - Tạo và điền nội dung cho tất cả các tệp bộ nhớ cốt lõi
+  - Ghi lại trạng thái ban đầu trong `activeContext.md`
+  - Thiết lập `progress.md` với các nhiệm vụ ban đầu
+- **Kết quả**: Hoàn thành ngân hàng bộ nhớ với tất cả các tệp cần thiết
+
+## MẪU NGÂN HÀNG BỘ NHỚ
+
+### Mẫu `projectbrief.md`
+```markdown
+# Tóm tắt Dự án: [TÊN_DỰ_ÁN]
+*Phiên bản: 1.0*
+*Tạo: [NGÀY_HIỆN_TẠI]*
+*Cập nhật lần cuối: [NGÀY_HIỆN_TẠI]*
+
+## Tổng quan Dự án
+[Mô tả ngắn gọn về dự án, mục đích và các mục tiêu chính]
+
+## Yêu cầu Cốt lõi
+- [YÊU_CẦU_1]
+- [YÊU_CẦU_2]
+- [YÊU_CẦU_3]
+
+## Tiêu chí Thành công
+- [TIÊU_CHÍ_1]
+- [TIÊU_CHÍ_2]
+- [TIÊU_CHÍ_3]
+
+## Phạm vi
+### Trong Phạm vi
+- [MỤC_TRONG_PHẠM_VI_1]
+- [MỤC_TRONG_PHẠM_VI_2]
+
+### Ngoài Phạm vi
+- [MỤC_NGOÀI_PHẠM_VI_1]
+- [MỤC_NGOÀI_PHẠM_VI_2]
+
+## Thời gian
+- [CỘT_MỐC_1]: [NGÀY]
+- [CỘT_MỐC_2]: [NGÀY]
+- [CỘT_MỐC_3]: [NGÀY]
+
+## Các Bên liên quan
+- [BÊN_LIÊN_QUAN_1]: [VAI_TRÒ]
+- [BÊN_LIÊN_QUAN_2]: [VAI_TRÒ]
+
+---
+
+*Tài liệu này đóng vai trò là nền tảng cho dự án và định hướng tất cả các tệp bộ nhớ khác.*
+```
+
+### Mẫu `systemPatterns.md`
+```markdown
+# Mẫu Hệ thống: [TÊN_DỰ_ÁN]
+*Phiên bản: 1.0*
+*Tạo: [NGÀY_HIỆN_TẠI]*
+*Cập nhật lần cuối: [NGÀY_HIỆN_TẠI]*
+
+## Tổng quan Kiến trúc
+[Mô tả cấp cao về kiến trúc hệ thống]
+
+## Các Thành phần Chính
+- [THÀNH_PHẦN_1]: [MỤC_ĐÍCH]
+- [THÀNH_PHẦN_2]: [MỤC_ĐÍCH]
+- [THÀNH_PHẦN_3]: [MỤC_ĐÍCH]
+
+## Mẫu Thiết kế Đang Sử dụng
+- [MẪU_1]: [NGỮ_CẢNH_SỬ_DỤNG]
+- [MẪU_2]: [NGỮ_CẢNH_SỬ_DỤNG]
+- [MẪU_3]: [NGỮ_CẢNH_SỬ_DỤNG]
+
+## Luồng Dữ liệu
+[Mô tả hoặc sơ đồ về cách dữ liệu luân chuyển trong hệ thống]
+
+## Các Quyết định Kỹ thuật Chính
+- [QUYẾT_ĐỊNH_1]: [LÝ_DO]
+- [QUYẾT_ĐỊNH_2]: [LÝ_DO]
+- [QUYẾT_ĐỊNH_3]: [LÝ_DO]
+
+## Mối quan hệ giữa các Thành phần
+[Mô tả cách các thành phần tương tác với nhau]
+
+---
+
+*Tài liệu này ghi lại kiến trúc hệ thống và các mẫu thiết kế được sử dụng trong dự án.*
+```
+
+### Mẫu `techContext.md`
+```markdown
+# Ngữ cảnh Kỹ thuật: [TÊN_DỰ_ÁN]
+*Phiên bản: 1.0*
+*Tạo: [NGÀY_HIỆN_TẠI]*
+*Cập nhật lần cuối: [NGÀY_HIỆN_TẠI]*
+
+## Ngăn xếp Công nghệ
+- Frontend: [CÔNG_NGHỆ_FRONTEND]
+- Backend: [CÔNG_NGHỆ_BACKEND]
+- Cơ sở dữ liệu: [CÔNG_NGHỆ_CSDL]
+- Cơ sở hạ tầng: [CÔNG_NGHỆ_CƠ_SỞ_HẠ_TẦNG]
+
+## Thiết lập Môi trường Phát triển
+[Hướng dẫn thiết lập môi trường phát triển]
+
+## Phụ thuộc
+- [PHỤ_THUỘC_1]: [PHIÊN_BẢN] - [MỤC_ĐÍCH]
+- [PHỤ_THUỘC_2]: [PHIÊN_BẢN] - [MỤC_ĐÍCH]
+- [PHỤ_THUỘC_3]: [PHIÊN_BẢN] - [MỤC_ĐÍCH]
+
+## Ràng buộc Kỹ thuật
+- [RÀNG_BUỘC_1]
+- [RÀNG_BUỘC_2]
+- [RÀNG_BUỘC_3]
+
+## Xây dựng và Triển khai
+- Quy trình Xây dựng: [QUY_TRÌNH_XÂY_DỰNG]
+- Quy trình Triển khai: [QUY_TRÌNH_TRIỂN_KHAI]
+- CI/CD: [THIẾT_LẬP_CI_CD]
+
+## Phương pháp Kiểm thử
+- Kiểm thử Đơn vị: [PHƯƠNG_PHÁP_KIỂM_THỬ_ĐƠN_VỊ]
+- Kiểm thử Tích hợp: [PHƯƠNG_PHÁP_KIỂM_THỬ_TÍCH_HỢP]
+- Kiểm thử E2E: [PHƯƠNG_PHÁP_KIỂM_THỬ_E2E]
+
+---
+
+*Tài liệu này mô tả các công nghệ được sử dụng trong dự án và cách chúng được cấu hình.*
+```
+
+### Mẫu `activeContext.md`
+```markdown
+# Ngữ cảnh Hoạt động: [TÊN_DỰ_ÁN]
+*Phiên bản: 1.0*
+*Tạo: [NGÀY_HIỆN_TẠI]*
+*Cập nhật lần cuối: [NGÀY_HIỆN_TẠI]*
+*Chế độ RIPER hiện tại: [TÊN_CHẾ_ĐỘ]*
+
+## Trọng tâm Hiện tại
+[Mô tả về những gì đang làm hiện tại]
+
+## Các Thay đổi Gần đây
+- [THAY_ĐỔI_1]: [NGÀY] - [MÔ_TẢ]
+- [THAY_ĐỔI_2]: [NGÀY] - [MÔ_TẢ]
+- [THAY_ĐỔI_3]: [NGÀY] - [MÔ_TẢ]
+
+## Các Quyết định Đang Hoạt động
+- [QUYẾT_ĐỊNH_1]: [TRẠNG_THÁI] - [MÔ_TẢ]
+- [QUYẾT_ĐỊNH_2]: [TRẠNG_THÁI] - [MÔ_TẢ]
+- [QUYẾT_ĐỊNH_3]: [TRẠNG_THÁI] - [MÔ_TẢ]
+
+## Các Bước Tiếp Theo
+1. [BƯỚC_TIẾP_THEO_1]
+2. [BƯỚC_TIẾP_THEO_2]
+3. [BƯỚC_TIẾP_THEO_3]
+
+## Các Thách thức Hiện tại
+- [THÁCH_THỨC_1]: [MÔ_TẢ]
+- [THÁCH_THỨC_2]: [MÔ_TẢ]
+- [THÁCH_THỨC_3]: [MÔ_TẢ]
+
+## Tiến độ Triển khai
+- [✓] [NHIỆM_VỤ_ĐÃ_HOÀN_THÀNH_1]
+- [✓] [NHIỆM_VỤ_ĐÃ_HOÀN_THÀNH_2]
+- [ ] [NHIỆM_VỤ_ĐANG_CHỜ_1]
+- [ ] [NHIỆM_VỤ_ĐANG_CHỜ_2]
+
+---
+
+*Tài liệu này ghi lại trạng thái công việc hiện tại và các bước tiếp theo ngay lập tức.*
+```
+
+### Mẫu `progress.md`
+```markdown
+# Theo dõi Tiến độ: [TÊN_DỰ_ÁN]
+*Phiên bản: 1.0*
+*Tạo: [NGÀY_HIỆN_TẠI]*
+*Cập nhật lần cuối: [NGÀY_HIỆN_TẠI]*
+
+## Trạng thái Dự án
+Hoàn thành Tổng thể: [PHẦN_TRĂM]%
+
+## Những gì Hoạt động
+- [TÍNH_NĂNG_1]: [TRẠNG_THÁI_HOÀN_THÀNH] - [GHI_CHÚ]
+- [TÍNH_NĂNG_2]: [TRẠNG_THÁI_HOÀN_THÀNH] - [GHI_CHÚ]
+- [TÍNH_NĂNG_3]: [TRẠNG_THÁI_HOÀN_THÀNH] - [GHI_CHÚ]
+
+## Những gì Đang Tiến hành
+- [TÍNH_NĂNG_4]: [PHẦN_TRĂM_TIẾN_ĐỘ]% - [GHI_CHÚ]
+- [TÍNH_NĂNG_5]: [PHẦN_TRĂM_TIẾN_ĐỘ]% - [GHI_CHÚ]
+- [TÍNH_NĂNG_6]: [PHẦN_TRĂM_TIẾN_ĐỘ]% - [GHI_CHÚ]
+
+## Những gì Còn Lại để Xây dựng
+- [TÍNH_NĂNG_7]: [ƯU_TIÊN] - [GHI_CHÚ]
+- [TÍNH_NĂNG_8]: [ƯU_TIÊN] - [GHI_CHÚ]
+- [TÍNH_NĂNG_9]: [ƯU_TIÊN] - [GHI_CHÚ]
+
+## Các Vấn đề Đã Biết
+- [VẤN_ĐỀ_1]: [MỨC_ĐỘ_NGHIÊM_TRỌNG] - [MÔ_TẢ] - [TRẠNG_THÁI]
+- [VẤN_ĐỀ_2]: [MỨC_ĐỘ_NGHIÊM_TRỌNG] - [MÔ_TẢ] - [TRẠNG_THÁI]
+- [VẤN_ĐỀ_3]: [MỨC_ĐỘ_NGHIÊM_TRỌNG] - [MÔ_TẢ] - [TRẠNG_THÁI]
+
+## Các Cột mốc
+- [CỘT_MỐC_1]: [NGÀY_HẾT_HẠN] - [TRẠNG_THÁI]
+- [CỘT_MỐC_2]: [NGÀY_HẾT_HẠN] - [TRẠNG_THÁI]
+- [CỘT_MỐC_3]: [NGÀY_HẾT_HẠN] - [TRẠNG_THÁI]
+
+---
+
+*Tài liệu này theo dõi những gì hoạt động, những gì đang tiến hành và những gì còn lại để xây dựng.*
+```
+
+## CHUYỂN SANG LUỒNG CÔNG VIỆC RIPER
+
+Sau khi hoàn thành cả sáu bước:
+1. Xác minh tất cả các tệp bộ nhớ được tạo và điền nội dung đúng cách
+2. Cập nhật `state.mdc` với:
+   - `PROJECT_PHASE = "DEVELOPMENT"`
+   - `START_PHASE_STATUS = "COMPLETED"`
+   - `START_PHASE_STEP = 6`
+   - `INITIALIZATION_DATE = [ngày/giờ hiện tại]`
+3. Lưu trữ thành phần này vào `.cursor/rules/archive/start-phase.mdc.archive`
+4. Tự động chuyển sang chế độ RESEARCH
+5. Thông báo cho người dùng: "Khởi tạo dự án hoàn tất. Đang vào chế độ RESEARCH để bắt đầu phát triển."
+
+## CHECKLIST KẾT QUẢ ĐẦU RA
+
+Vào cuối giai đoạn START, đảm bảo các mục sau hoàn thành:
+
+- [ ] Yêu cầu dự án được ghi lại trong `projectbrief.md`
+- [ ] Ngăn xếp công nghệ được chọn và ghi lại trong `techContext.md`
+- [ ] Kiến trúc hệ thống được định nghĩa trong `systemPatterns.md`
+- [ ] Khung dự án được tạo
+- [ ] Môi trường phát triển được cấu hình và ghi lại
+- [ ] Ngân hàng Bộ nhớ được khởi tạo với tất cả các tệp cốt lõi
+- [ ] Các nhiệm vụ ban đầu được ghi lại trong `progress.md`
+
+Khi tất cả các mục được kiểm tra, hệ thống sẽ tự động chuyển sang luồng công việc RIPER.
+
+---
+
+*Tệp này hướng dẫn khởi tạo dự án qua giai đoạn START. Nó sẽ được tự động lưu trữ sau khi khởi tạo hoàn tất.*

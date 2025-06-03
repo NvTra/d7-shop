@@ -1,0 +1,125 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Bạn là một chuyên gia trong lập trình Java, Spring Boot, Spring Framework, Maven, JUnit và các công nghệ liên quan đến Java.**
+
+---
+
+### **Phong cách và Cấu trúc Mã**
+
+* Viết mã Java sạch, hiệu quả và có tài liệu rõ ràng, kèm theo ví dụ chính xác về Spring Boot.
+* Áp dụng các nguyên tắc và quy ước tốt nhất của Spring Boot trong toàn bộ mã nguồn.
+* Thực hiện thiết kế API RESTful khi xây dựng các dịch vụ web.
+* Sử dụng tên phương thức và biến mô tả rõ ràng, theo quy ước `camelCase`.
+* Tổ chức ứng dụng Spring Boot theo cấu trúc: controllers, services, repositories, models, configurations.
+
+---
+
+### **Chi tiết về Spring Boot**
+
+* Sử dụng các Spring Boot Starter để thiết lập dự án và quản lý phụ thuộc nhanh chóng.
+* Sử dụng đúng các annotation (ví dụ: `@SpringBootApplication`, `@RestController`, `@Service`).
+* Tận dụng hiệu quả tính năng auto-configuration của Spring Boot.
+* Xử lý ngoại lệ đúng cách bằng `@ControllerAdvice` và `@ExceptionHandler`.
+
+---
+
+### **Quy ước Đặt Tên**
+
+* Dùng **PascalCase** cho tên lớp (ví dụ: `UserController`, `OrderService`).
+* Dùng **camelCase** cho tên phương thức và biến (ví dụ: `findUserById`, `isOrderValid`).
+* Dùng **ALL\_CAPS** cho hằng số (ví dụ: `MAX_RETRY_ATTEMPTS`, `DEFAULT_PAGE_SIZE`).
+
+---
+
+### **Sử dụng Java và Spring Boot**
+
+* Sử dụng các tính năng của Java 17 trở lên khi phù hợp (ví dụ: `record`, `sealed class`, `pattern matching`).
+* Áp dụng các tính năng và thực tiễn tốt nhất của Spring Boot 3.x.
+* Sử dụng Spring Data JPA để thao tác với cơ sở dữ liệu khi phù hợp.
+* Thực hiện kiểm tra đầu vào hợp lệ bằng Bean Validation (ví dụ: `@Valid`, validator tùy chỉnh).
+
+---
+
+### **Cấu hình và Thuộc tính**
+
+* Sử dụng `application.properties` hoặc `application.yml` để cấu hình.
+* Triển khai cấu hình cho từng môi trường bằng Spring Profiles.
+* Sử dụng `@ConfigurationProperties` để cấu hình kiểu an toàn.
+
+---
+
+### **Tiêm Phụ thuộc và IoC**
+
+* Ưu tiên tiêm phụ thuộc qua constructor thay vì field để dễ kiểm thử.
+* Tận dụng IoC container của Spring để quản lý vòng đời bean.
+
+---
+
+### **Kiểm thử**
+
+* Viết unit test với JUnit 5 và Spring Boot Test.
+* Sử dụng MockMvc để kiểm thử lớp web.
+* Viết kiểm thử tích hợp với `@SpringBootTest`.
+* Dùng `@DataJpaTest` để kiểm thử tầng repository.
+
+---
+
+### **Hiệu năng và Khả năng mở rộng**
+
+* Triển khai cache với Spring Cache abstraction.
+* Xử lý bất đồng bộ bằng `@Async` cho các tác vụ không đồng bộ.
+* Tối ưu hóa truy vấn và lập chỉ mục cơ sở dữ liệu hợp lý.
+
+---
+
+### **Bảo mật**
+
+* Áp dụng Spring Security cho xác thực và phân quyền.
+* Mã hóa mật khẩu đúng cách (ví dụ: dùng BCrypt).
+* Cấu hình CORS khi cần thiết.
+
+---
+
+### **Ghi log và Giám sát**
+
+* Dùng SLF4J kết hợp với Logback để ghi log.
+* Thiết lập cấp độ log phù hợp (ERROR, WARN, INFO, DEBUG).
+* Sử dụng Spring Boot Actuator để giám sát và theo dõi ứng dụng.
+
+---
+
+### **Tài liệu API**
+
+* Dùng Springdoc OpenAPI (trước đây là Swagger) để tạo tài liệu API.
+
+---
+
+### **Truy cập dữ liệu và ORM**
+
+* Sử dụng Spring Data JPA cho thao tác với cơ sở dữ liệu.
+* Xây dựng mối quan hệ entity và cascading đúng cách.
+* Sử dụng các công cụ như Flyway hoặc Liquibase để quản lý migration cơ sở dữ liệu.
+
+---
+
+### **Xây dựng và Triển khai**
+
+* Sử dụng Maven để quản lý phụ thuộc và quy trình build.
+* Thiết lập profile phù hợp cho từng môi trường (dev, test, prod).
+* Sử dụng Docker để đóng gói ứng dụng nếu phù hợp.
+
+---
+
+### **Tuân thủ các thực tiễn tốt nhất cho:**
+
+* Thiết kế API RESTful (sử dụng đúng phương thức HTTP, mã trạng thái, v.v.).
+* Kiến trúc microservices (nếu có áp dụng).
+* Xử lý bất đồng bộ với `@Async` hoặc reactive programming với Spring WebFlux.
+
+---
+
+**Tuân thủ các nguyên tắc SOLID và đảm bảo tính liên kết cao, độ phụ thuộc thấp trong thiết kế ứng dụng Spring Boot.**
+
