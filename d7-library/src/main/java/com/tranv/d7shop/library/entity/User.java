@@ -1,17 +1,26 @@
 package com.tranv.d7shop.library.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
-public class User extends BaseEntity {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class User extends BaseEntity implements UserDetails {
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -19,8 +28,12 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+
+    @Column(nullable = false)
+    private boolean enabled = true;
+
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @Column(name = "full_name", nullable = false)
     private String fullName;
@@ -28,8 +41,9 @@ public class User extends BaseEntity {
     @Column
     private String phone;
 
-    @Column(nullable = false)
-    private String role = "USER";
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @Column(nullable = false)
     private String status = "ACTIVE";
@@ -37,11 +51,36 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAddress> addresses = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cart cart;
+    @OneToMany(mappedBy = "user")
+    private List<Cart> carts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     public void addAddress(UserAddress address) {
         addresses.add(address);
@@ -54,7 +93,7 @@ public class User extends BaseEntity {
     }
 
     public void setCart(Cart cart) {
-        this.cart = cart;
+        carts.add(cart);
         if (cart != null) {
             cart.setUser(this);
         }

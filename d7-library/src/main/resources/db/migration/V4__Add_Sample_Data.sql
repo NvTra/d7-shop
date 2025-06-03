@@ -1,5 +1,5 @@
 -- Insert sample users
-INSERT INTO users (id, username, email, password_hash, full_name, phone, role)
+INSERT INTO users (id, username, email, password, full_name, phone, role)
 VALUES
     ('11111111-1111-1111-1111-111111111111', 'admin', 'admin@d7shop.com', '$2a$10$rS.F0jGmxUB.0Wr2tXAVfu8df3h3QT6PTgqJkVpZHxlbxBJkhT2Oi', 'System Admin', '0123456789', 'ADMIN'),
     ('22222222-2222-2222-2222-222222222222', 'user1', 'user1@example.com', '$2a$10$rS.F0jGmxUB.0Wr2tXAVfu8df3h3QT6PTgqJkVpZHxlbxBJkhT2Oi', 'User One', '0987654321', 'USER'),

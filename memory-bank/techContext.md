@@ -1,221 +1,100 @@
-# Technical Context
+# Ngữ cảnh Kỹ thuật: D7-Shop
+*Phiên bản: 1.0*
+*Tạo: 2024-03-21*
+*Cập nhật lần cuối: 2024-03-21*
 
-## Technology Stack
-
-### Backend
-- Java 17
-- Spring Boot 3.2.x
+## Tech Stack
+- Java 17+
+- Spring Boot 3.1.5
+- PostgreSQL 15+
+- Spring Security với JWT
+- Flyway Migration
 - Spring Data JPA
-- Spring Security
-- Spring Cloud
-- MapStruct
-- Lombok
-- Flyway
-
-### Database
-- PostgreSQL 15
-- UUID for primary keys
-- Soft delete pattern
-- Audit fields
-- Optimized indexes
-
-### Tools & Libraries
+- Swagger/OpenAPI 3.0
 - Maven
-- JUnit 5
-- Mockito
-- OpenAPI/Swagger
-- Docker
-- Git
 
-## Architecture
-
-### Microservices
+## Cấu trúc Dự án
 1. d7-library
-   - Common library
-   - Shared components
+   - Common utilities và configurations
+   - Shared entities và DTOs
+   - Security configurations
    - Database migrations
-   - Entity definitions
 
 2. d7-admin-service
-   - Admin dashboard backend
-   - Product management
-   - Order management
-   - User management
+   - Admin API endpoints
+   - Admin-specific configurations
+   - Admin security rules
 
 3. d7-enduser-service
-   - Public API
-   - Shopping cart
-   - Order processing
-   - Payment integration
+   - Public API endpoints
+   - User-specific configurations
+   - Public security rules
 
-### Database Design
-- UUID primary keys
-- Audit fields (created_at, updated_at, etc.)
+## Database Design
+- UUID cho primary keys
 - Soft delete pattern
-- Optimized indexes
-- Data validation constraints
+- Audit fields (created_at, updated_at, etc.)
+- Role-based access control
+- Optimistic locking
+- Database-level constraints
+- Appropriate indexes
 
-### Security
-- JWT authentication
+## Security Implementation
+- JWT based authentication
 - Role-based authorization
+- Method level security
+- API endpoint protection
+- CORS configuration
 - Password encryption
-- API security
+- Token management
 
-### Testing
-- Unit tests
-- Integration tests
-- Performance tests
-- Security tests
+## Development Guidelines
+1. Code Style
+   - Clean code principles
+   - SOLID principles
+   - Consistent naming conventions
+   - Proper documentation
 
-## Development Practices
+2. API Design
+   - RESTful principles
+   - Proper HTTP methods
+   - Consistent response format
+   - Proper error handling
+   - API versioning
 
-### Code Quality
-- Clean code principles
-- SOLID principles
-- Design patterns
-- Code reviews
-
-### Version Control
-- Git flow
-- Feature branches
-- Pull requests
-- Code reviews
-
-### Documentation
-- API documentation
-- Code documentation
-- Architecture documentation
-- Deployment guide
-
-### CI/CD
-- Automated builds
-- Unit tests
-- Integration tests
-- Deployment automation
-
-## Environment Setup
-
-### Development
-- JDK 17
-- PostgreSQL 15
-- Maven
-- Git
-- Docker
-- IDE (IntelliJ/Eclipse)
-
-### Testing
-- JUnit 5
-- Mockito
-- TestContainers
-- Postman
-
-### Production
-- Docker containers
-- Load balancer
-- Monitoring
-- Logging
-
-## Development Environment
-
-### Required Software
-- JDK 17
-- Maven 3.8+
-- PostgreSQL 15
-- Docker
-- Git
-
-### IDE Setup
-- IntelliJ IDEA / Eclipse
-- Lombok plugin
-- Spring Boot plugin
-- Database tools
-
-### Build & Run
-```bash
-# Build all modules
-mvn clean install
-
-# Run specific service
-cd d7-admin-service
-mvn spring-boot:run
-
-cd d7-enduser-service
-mvn spring-boot:run
-```
-
-### Database Setup
-```bash
-# Create database
-createdb d7shop
-
-# Run migrations
-mvn flyway:migrate
-```
-
-## Testing Strategy
-
-### Unit Tests
-- JUnit 5
-- Mockito
-- AssertJ
-- Test containers
-
-### Integration Tests
-- Spring Boot Test
-- Test containers
-- REST Assured
-
-### Performance Tests
-- JMeter
-- Gatling
-
-## Deployment
-
-### Development
-- Local environment
-- Docker compose
-- H2 database (optional)
-
-### Staging
-- Docker containers
-- PostgreSQL
-- Nginx reverse proxy
-
-### Production
-- Kubernetes
-- PostgreSQL cluster
-- Load balancer
-- Monitoring
+3. Testing
+   - Unit tests
+   - Integration tests
+   - API tests
+   - Security tests
 
 ## Monitoring & Logging
+- Structured logging
+- Performance metrics
+- Error tracking
+- Audit logging
+- Health checks
 
-### Metrics
-- Micrometer
-- Prometheus
-- Grafana
+## Deployment
+- Environment configurations
+- Docker support (planned)
+- CI/CD pipeline (planned)
+- Backup strategy
+- Scaling strategy
 
-### Logging
-- Logback
-- ELK Stack
-- Log rotation
-
-### Tracing
-- Spring Cloud Sleuth
-- Zipkin
+## Performance Considerations
+- Connection pooling
+- Query optimization
+- Caching strategy
+- Batch processing
+- Async operations
 
 ## Documentation
+- API documentation (Swagger)
+- Technical documentation
+- Development guides
+- Deployment guides
 
-### API Documentation
-- OpenAPI/Swagger
-- Postman collections
-- API guidelines
+---
 
-### Code Documentation
-- Javadoc
-- README files
-- Architecture diagrams
-
-### User Documentation
-- User guides
-- Admin guides
-- API guides 
+*Tài liệu này định nghĩa ngữ cảnh kỹ thuật và hướng dẫn phát triển cho dự án.* 

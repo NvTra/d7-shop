@@ -2,178 +2,32 @@
 description: "CursorRIPER Framework - State Management"
 globs: 
 alwaysApply: true
-version: "1.0.2"
-date_created: "2025-04-05"
-last_updated: "2025-04-05"
-framework_component: "state"
-priority: "critical"
-scope: "always_load"
 ---
-<!-- Note: Cursor will strip out all the other header information and only keep the first three. -->
 # Khung CursorRIPER - Quản lý Trạng thái
 # Phiên bản 1.0.2
 
-## HƯỚNG DẪN XỬ LÝ AI
-Tệp này định nghĩa trạng thái hiện tại của dự án trong Khung CursorRIPER. Là một trợ lý AI, bạn PHẢI:
-- Luôn nạp tệp này sau `core.mdc` nhưng trước các thành phần khác
-- Không bao giờ sửa đổi giá trị trạng thái mà không có ủy quyền hợp lệ qua các lệnh
-- Xác minh các chuyển đổi trạng thái theo các đường dẫn được phép
-- Cập nhật tệp này khi có thay đổi trạng thái
-- Giữ tất cả các giá trị trạng thái nhất quán với nhau
-
 ## TRẠNG THÁI DỰ ÁN HIỆN TẠI
 
-PROJECT_PHASE: "UNINITIATED"
+PROJECT_PHASE: "DEVELOPMENT"
 # Các giá trị có thể: "UNINITIATED", "INITIALIZING", "DEVELOPMENT", "MAINTENANCE"
 
-RIPER_CURRENT_MODE: "NONE"
+RIPER_CURRENT_MODE: "RESEARCH"
 # Các giá trị có thể: "NONE", "RESEARCH", "INNOVATE", "PLAN", "EXECUTE", "REVIEW"
 
-START_PHASE_STATUS: "NOT_STARTED"
+START_PHASE_STATUS: "COMPLETED"
 # Các giá trị có thể: "NOT_STARTED", "IN_PROGRESS", "COMPLETED", "ARCHIVED"
 
-START_PHASE_STEP: 0
+START_PHASE_STEP: 6
 # Các giá trị có thể: 0-6 (0=Chưa bắt đầu, 1=Yêu cầu, 2=Công nghệ, 3=Kiến trúc, 4=Dựng khung, 5=Môi trường, 6=Ngân hàng Bộ nhớ)
 
-LAST_UPDATE: "2025-04-05T00:00:00Z"
+LAST_UPDATE: "2024-03-20T00:00:00Z"
 # Dấu thời gian định dạng ISO 8601 của lần cập nhật trạng thái cuối cùng
 
-INITIALIZATION_DATE: ""
+INITIALIZATION_DATE: "2024-03-20T00:00:00Z"
 # Khi giai đoạn START hoàn thành, để trống nếu chưa hoàn thành
 
-FRAMEWORK_VERSION: "1.0.0"
+FRAMEWORK_VERSION: "1.0.2"
 # Phiên bản hiện tại của khung
-
-## QUY TẮC CHUYỂN ĐỔI TRẠNG THÁI
-
-```mermaid
-stateDiagram-v2
-    [*] --> UNINITIATED
-    
-    UNINITIATED --> INITIALIZING: /start
-    INITIALIZING --> DEVELOPMENT: Giai đoạn START hoàn thành
-    DEVELOPMENT --> MAINTENANCE: Yêu cầu người dùng
-    MAINTENANCE --> DEVELOPMENT: Yêu cầu người dùng
-    
-    state INITIALIZING {
-        [*] --> NOT_STARTED
-        NOT_STARTED --> IN_PROGRESS: Bắt đầu START
-        IN_PROGRESS --> COMPLETED: Hoàn thành tất cả các bước
-        COMPLETED --> ARCHIVED: Vào DEVELOPMENT
-    }
-    
-    state "DEVELOPMENT/MAINTENANCE" as DM {
-        [*] --> RESEARCH
-        RESEARCH --> INNOVATE: /innovate
-        INNOVATE --> PLAN: /plan
-        PLAN --> EXECUTE: /execute
-        EXECUTE --> REVIEW: /review
-        REVIEW --> RESEARCH: /research
-    }
-```
-
-### Chuyển đổi Giai đoạn
-- UNINITIATED → INITIALIZING
-  - Kích hoạt: "/start" hoặc "BEGIN START PHASE"
-  - Yêu cầu: Không có
-  
-- INITIALIZING → DEVELOPMENT
-  - Kích hoạt: Tự động khi giai đoạn START hoàn thành
-  - Yêu cầu: START_PHASE_STATUS = "COMPLETED"
-  
-- DEVELOPMENT → MAINTENANCE
-  - Kích hoạt: Chuyển đổi thủ công bởi người dùng
-  - Yêu cầu: Yêu cầu rõ ràng của người dùng
-  
-- MAINTENANCE → DEVELOPMENT
-  - Kích hoạt: Chuyển đổi thủ công bởi người dùng
-  - Yêu cầu: Yêu cầu rõ ràng của người dùng
-
-### Chuyển đổi Chế độ
-- Bất kỳ chế độ nào → RESEARCH
-  - Kích hoạt: "/research" hoặc "ENTER RESEARCH MODE"
-  - Yêu cầu: PROJECT_PHASE trong ["DEVELOPMENT", "MAINTENANCE"]
-  
-- Bất kỳ chế độ nào → INNOVATE
-  - Kích hoạt: "/innovate" hoặc "ENTER INNOVATE MODE"
-  - Yêu cầu: PROJECT_PHASE trong ["DEVELOPMENT", "MAINTENANCE"]
-  
-- Bất kỳ chế độ nào → PLAN
-  - Kích hoạt: "/plan" hoặc "ENTER PLAN MODE"
-  - Yêu cầu: PROJECT_PHASE trong ["DEVELOPMENT", "MAINTENANCE"]
-  
-- Bất kỳ chế độ nào → EXECUTE
-  - Kích hoạt: "/execute" hoặc "ENTER EXECUTE MODE"
-  - Yêu cầu: PROJECT_PHASE trong ["DEVELOPMENT", "MAINTENANCE"]
-  
-- Bất kỳ chế độ nào → REVIEW
-  - Kích hoạt: "/review" hoặc "ENTER REVIEW MODE"
-  - Yêu cầu: PROJECT_PHASE trong ["DEVELOPMENT", "MAINTENANCE"]
-
-### Chuyển đổi Trạng thái Giai đoạn START
-- NOT_STARTED → IN_PROGRESS
-  - Kích hoạt: "/start" hoặc "BEGIN START PHASE"
-  - Yêu cầu: PROJECT_PHASE = "UNINITIATED"
-  
-- IN_PROGRESS → COMPLETED
-  - Kích hoạt: Hoàn thành tất cả các bước giai đoạn START
-  - Yêu cầu: START_PHASE_STEP = 6
-  
-- COMPLETED → ARCHIVED
-  - Kích hoạt: Tự động sau khi chuyển sang DEVELOPMENT
-  - Yêu cầu: PROJECT_PHASE = "DEVELOPMENT"
-
-## QUY TRÌNH CẬP NHẬT TRẠNG THÁI
-
-### Cập nhật Giai đoạn Dự án
-1. Xác minh chuyển đổi được phép
-2. Tạo bản sao lưu trạng thái hiện tại
-3. Cập nhật giá trị PROJECT_PHASE
-4. Cập nhật dấu thời gian LAST_UPDATE
-5. Thực hiện bất kỳ khởi tạo cụ thể nào cho giai đoạn
-
-### Cập nhật Chế độ RIPER
-1. Xác minh chuyển đổi được phép
-2. Cập nhật giá trị RIPER_CURRENT_MODE
-3. Cập nhật dấu thời gian LAST_UPDATE
-4. Cập nhật `activeContext.md` để phản ánh thay đổi chế độ
-
-### Cập nhật Trạng thái Giai đoạn START
-1. Xác minh chuyển đổi được phép
-2. Cập nhật giá trị START_PHASE_STATUS
-3. Cập nhật dấu thời gian LAST_UPDATE
-4. Nếu chuyển sang COMPLETED, thiết lập INITIALIZATION_DATE
-
-### Cập nhật Bước Giai đoạn START
-1. Xác minh việc tăng bước là hợp lý
-2. Cập nhật giá trị START_PHASE_STEP
-3. Cập nhật dấu thời gian LAST_UPDATE
-4. Nếu đạt bước 6, kích hoạt quy trình hoàn thành
-
-## PHÁT HIỆN TRẠNG THÁI TỰ ĐỘNG
-
-Khi xác định trạng thái dự án hiện tại:
-1. Kiểm tra sự tồn tại của các tệp ngân hàng bộ nhớ
-2. Nếu ngân hàng bộ nhớ hoàn chỉnh tồn tại nhưng STATE_PHASE là "UNINITIATED":
-   - Đặt PROJECT_PHASE thành "DEVELOPMENT"
-   - Đặt START_PHASE_STATUS thành "COMPLETED"
-   - Đặt START_PHASE_STEP thành 6
-   - Đặt INITIALIZATION_DATE dựa trên dấu thời gian tệp
-3. Nếu ngân hàng bộ nhớ chỉ tồn tại một phần:
-   - Đặt PROJECT_PHASE thành "INITIALIZING"
-   - Đặt START_PHASE_STATUS thành "IN_PROGRESS"
-   - Xác định START_PHASE_STEP dựa trên các tệp hiện có
-
-## BẢO VỆ KHỞI TẠO LẠI
-
-Nếu "/start" hoặc "BEGIN START PHASE" được phát hiện khi PROJECT_PHASE không phải là "UNINITIATED":
-1. Cảnh báo người dùng về rủi ro khởi tạo lại
-2. Yêu cầu xác nhận rõ ràng: "CONFIRM RE-INITIALIZATION"
-3. Nếu được xác nhận:
-   - Tạo bản sao lưu của ngân hàng bộ nhớ hiện tại
-   - Đặt lại trạng thái thành PROJECT_PHASE = "INITIALIZING"
-   - Đặt lại START_PHASE_STATUS thành "IN_PROGRESS"
-   - Đặt lại START_PHASE_STEP thành 1
 
 ---
 
