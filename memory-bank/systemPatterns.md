@@ -29,20 +29,16 @@ D7-Shop được xây dựng theo kiến trúc microservices với các thành p
 
 ### 2. Repository Pattern
 ```java
-public interface BaseRepository<T, ID> extends JpaRepository<T, ID> {
-    // Soft delete methods
-    @Query("UPDATE #{#entityName} e SET e.deletedAt = CURRENT_TIMESTAMP, e.isDeleted = true WHERE e.id = :id")
-    void softDelete(@Param("id") ID id);
-    
-    // Custom find methods
+public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, UUID> {
     @Query("SELECT e FROM #{#entityName} e WHERE e.isDeleted = false")
     List<T> findAllActive();
-}
-
-public interface ProductRepository extends BaseRepository<Product, UUID> {
-    // Custom queries
-    @Query("SELECT p FROM Product p WHERE p.category.id = :categoryId AND p.isDeleted = false")
-    List<Product> findByCategoryId(@Param("categoryId") UUID categoryId);
+    
+    @Query("SELECT e FROM #{#entityName} e WHERE e.id = :id AND e.isDeleted = false")
+    Optional<T> findActiveById(@Param("id") UUID id);
+    
+    @Modifying
+    @Query("UPDATE #{#entityName} e SET e.isDeleted = true, e.deletedAt = CURRENT_TIMESTAMP WHERE e.id = :id")
+    void softDelete(@Param("id") UUID id);
 }
 ```
 
@@ -50,36 +46,40 @@ public interface ProductRepository extends BaseRepository<Product, UUID> {
 ```java
 @Service
 @Transactional
-public class BaseService<T, ID> {
+public abstract class BaseService<T extends BaseEntity, R extends BaseRepository<T>> {
     @Autowired
-    protected BaseRepository<T, ID> repository;
+    protected R repository;
     
-    public T save(T entity) {
-        // Validation and business logic
+    public T create(T entity) {
         return repository.save(entity);
     }
     
-    public void delete(ID id) {
+    public T update(T entity) {
+        if (!repository.existsById(entity.getId())) {
+            throw new ResourceNotFoundException("Entity not found");
+        }
+        return repository.save(entity);
+    }
+    
+    public void delete(UUID id) {
         repository.softDelete(id);
     }
-}
-
-@Service
-public class ProductService extends BaseService<Product, UUID> {
-    @Autowired
-    private CategoryService categoryService;
     
-    public Product create(ProductDTO dto) {
-        // Custom business logic
-        validateProduct(dto);
-        return super.save(mapToEntity(dto));
+    public Optional<T> findById(UUID id) {
+        return repository.findActiveById(id);
+    }
+    
+    public List<T> findAll() {
+        return repository.findAllActive();
     }
 }
 ```
 
 ### 4. DTO Pattern
 ```java
-public class BaseDTO {
+@Data
+@MappedSuperclass
+public abstract class BaseDto implements Serializable {
     private UUID id;
     private LocalDateTime createdAt;
     private String createdBy;
@@ -87,119 +87,32 @@ public class BaseDTO {
     private String updatedBy;
 }
 
-public class ProductDTO extends BaseDTO {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ProductDto extends BaseDto {
     private String name;
-    private String slug;
     private String description;
-    private UUID categoryId;
+    private String sku;
     private BigDecimal price;
     private BigDecimal salePrice;
-    private Integer stockQuantity;
-    private String sku;
-    private String status;
-    private Boolean enabled;
-    private Boolean featured;
-    private Double averageRating;
-    private Integer reviewCount;
+    private Integer quantity;
+    private UUID categoryId;
+    private List<String> imageUrls;
 }
 ```
 
-### 5. Mapper Pattern
-```java
-@Mapper(componentModel = "spring")
-public interface BaseMapper<D extends BaseDTO, E> {
-    D toDto(E entity);
-    E toEntity(D dto);
-    List<D> toDtoList(List<E> entities);
-    List<E> toEntityList(List<D> dtos);
-}
-
-@Mapper(componentModel = "spring")
-public interface ProductMapper extends BaseMapper<ProductDTO, Product> {
-    @Mapping(source = "category.id", target = "categoryId")
-    ProductDTO toDto(Product product);
-    
-    @Mapping(source = "categoryId", target = "category.id")
-    Product toEntity(ProductDTO dto);
-}
-```
-
-### 6. Controller Pattern
-```java
-@RestController
-@RequestMapping("/api/v1")
-public class BaseController<T, D extends BaseDTO, ID> {
-    @Autowired
-    protected BaseService<T, ID> service;
-    @Autowired
-    protected BaseMapper<D, T> mapper;
-    
-    @GetMapping
-    public List<D> findAll() {
-        return mapper.toDtoList(service.findAll());
-    }
-    
-    @PostMapping
-    public D create(@Valid @RequestBody D dto) {
-        return mapper.toDto(service.save(mapper.toEntity(dto)));
-    }
-}
-
-@RestController
-@RequestMapping("/api/v1/products")
-public class ProductController extends BaseController<Product, ProductDTO, UUID> {
-    @GetMapping("/category/{categoryId}")
-    public List<ProductDTO> findByCategory(@PathVariable UUID categoryId) {
-        return mapper.toDtoList(((ProductService) service).findByCategoryId(categoryId));
-    }
-}
-```
-
-### 7. Exception Handling Pattern
-```java
-@ControllerAdvice
-public class GlobalExceptionHandler {
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
-        return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
-    }
-    
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(ValidationException ex) {
-        return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-}
-```
-
-### 8. Validation Pattern
-```java
-public class ValidationUtils {
-    public static void validatePrice(BigDecimal price, BigDecimal salePrice) {
-        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ValidationException("Price must be greater than or equal to 0");
-        }
-        if (salePrice != null) {
-            if (salePrice.compareTo(BigDecimal.ZERO) < 0) {
-                throw new ValidationException("Sale price must be greater than or equal to 0");
-            }
-            if (salePrice.compareTo(price) > 0) {
-                throw new ValidationException("Sale price cannot be greater than regular price");
-            }
-        }
-    }
-}
-```
-
-### 9. Audit Pattern
+### 5. Audit Pattern
 ```java
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
+@Data
 public abstract class BaseEntity {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     
     @CreatedDate
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
     @CreatedBy
@@ -212,79 +125,155 @@ public abstract class BaseEntity {
     private String updatedBy;
     
     private LocalDateTime deletedAt;
-    private Boolean isDeleted = false;
+    
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }
 ```
 
-### 10. Event Pattern
+### 6. Validation Pattern
 ```java
-public class DomainEvent<T> {
-    private final T entity;
-    private final String action;
+public class ValidationUtils {
+    public static void validatePrice(BigDecimal price, BigDecimal salePrice) {
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
+        if (salePrice != null) {
+            if (salePrice.compareTo(BigDecimal.ZERO) < 0) {
+                throw new IllegalArgumentException("Sale price cannot be negative");
+            }
+            if (salePrice.compareTo(price) > 0) {
+                throw new IllegalArgumentException("Sale price cannot be greater than regular price");
+            }
+        }
+    }
+    
+    public static void validateQuantity(Integer quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        }
+    }
+    
+    public static void validateRating(Integer rating) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
+    }
+}
+```
+
+### 7. Exception Handling Pattern
+```java
+@ControllerAdvice
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+}
+```
+
+### 8. Event Pattern
+```java
+@Data
+@SuperBuilder
+public abstract class DomainEvent {
+    private final UUID eventId;
     private final LocalDateTime timestamp;
-    private final String username;
+    private final String type;
+}
+
+@Data
+@SuperBuilder
+public class OrderCreatedEvent extends DomainEvent {
+    private final UUID orderId;
+    private final UUID userId;
+    private final BigDecimal totalAmount;
 }
 
 @Service
-public class EventPublisher {
-    @Autowired
-    private ApplicationEventPublisher publisher;
-    
-    public <T> void publish(T entity, String action) {
-        DomainEvent<T> event = new DomainEvent<>(entity, action, 
-            LocalDateTime.now(), SecurityUtils.getCurrentUsername());
-        publisher.publishEvent(event);
+public class OrderEventHandler {
+    @Async
+    @EventListener
+    public void handleOrderCreated(OrderCreatedEvent event) {
+        // Xử lý sự kiện đơn hàng được tạo
+        // - Gửi email xác nhận
+        // - Cập nhật inventory
+        // - Tạo payment request
     }
 }
 ```
 
 ## Nguyên tắc Thiết kế
 
-1. SOLID Principles
-   - Single Responsibility: Mỗi class chỉ có một trách nhiệm
-   - Open/Closed: Mở rộng thông qua kế thừa, không sửa đổi code hiện có
-   - Liskov Substitution: Các class con có thể thay thế class cha
-   - Interface Segregation: Chia nhỏ interface theo chức năng
-   - Dependency Inversion: Phụ thuộc vào abstraction
+### SOLID Principles
+1. Single Responsibility Principle
+   - Mỗi class chỉ có một trách nhiệm
+   - Tách biệt các concerns
 
-2. Clean Code
-   - Đặt tên có ý nghĩa
-   - Hàm ngắn gọn, rõ ràng
-   - Tránh duplicate code
-   - Unit test đầy đủ
-   - Documentation rõ ràng
+2. Open/Closed Principle
+   - Sử dụng interfaces và abstract classes
+   - Dễ dàng mở rộng, không cần sửa đổi code hiện có
 
-3. Security
-   - Validation input
-   - Xử lý exception
-   - Audit logging
-   - Role-based access control
-   - Secure communication
+3. Liskov Substitution Principle
+   - BaseEntity và BaseDto làm nền tảng
+   - Các lớp con có thể thay thế lớp cha
 
-4. Performance
-   - Caching
-   - Lazy loading
-   - Index optimization
-   - Connection pooling
-   - Query optimization
+4. Interface Segregation Principle
+   - Tách biệt các interface theo chức năng
+   - Repository interfaces phù hợp với domain
+
+5. Dependency Inversion Principle
+   - Sử dụng dependency injection
+   - Loose coupling giữa các components
+
+### Clean Code Principles
+1. Meaningful Names
+   - Đặt tên rõ ràng, dễ hiểu
+   - Tuân thủ coding conventions
+
+2. Small Functions
+   - Mỗi function làm một việc
+   - Dễ test và maintain
+
+3. DRY (Don't Repeat Yourself)
+   - Tái sử dụng code qua base classes
+   - Tránh duplicate logic
+
+4. KISS (Keep It Simple, Stupid)
+   - Thiết kế đơn giản, dễ hiểu
+   - Tránh over-engineering
 
 ## Cấu trúc Package
 
-### d7-library
 ```
-com.tranv.d7shop.library
-├── config/         # Cấu hình chung
-├── dto/           # Data Transfer Objects
-├── entity/        # JPA Entities
-├── exception/     # Custom Exceptions
-└── repository/    # JPA Repositories
-```
-
-### d7-admin-service & d7-enduser-service
-```
-com.tranv.d7shop.[admin|enduser]
-├── controller/    # REST Controllers
-└── service/      # Business Services
+com.tranv.d7shop
+├── library
+│   ├── common
+│   │   └── enums
+│   ├── config
+│   ├── dto
+│   │   └── request
+│   ├── entity
+│   ├── exception
+│   └── repository
+├── admin
+│   ├── controller
+│   └── service
+└── enduser
+    ├── controller
+    └── service
 ```
 
 ## Database Schema

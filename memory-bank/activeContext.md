@@ -14,6 +14,7 @@
    - V2__Create_Product_Tables.sql: products, product_images, product_reviews
    - V3__Create_Order_Tables.sql: carts, orders, payments
    - V4__Add_Sample_Data.sql: dữ liệu mẫu cho tất cả các bảng
+   - V5__Add_Constraints.sql: constraints và indexes
 
 2. Thêm các constraint mới:
    - CHECK constraints cho các trường số
@@ -23,13 +24,34 @@
 3. Tối ưu hóa indexes:
    - Thêm điều kiện WHERE deleted_at IS NULL
    - Index cho các trường thường xuyên tìm kiếm
-   - Index có điều kiện cho các trường boolean
+   - Index có điều kiện cho các trường quan trọng
 
-## Next Steps
-1. Cập nhật entities để phản ánh các thay đổi database
-2. Thêm validation trong service layer
-3. Cập nhật unit tests
-4. Tối ưu hóa performance
+4. Cải thiện entities:
+   - Thêm helper methods
+   - Cập nhật relationships
+   - Thêm validation
+   - Tự động tính toán
+
+## Next Actions
+1. Hoàn thiện controller layer:
+   - Implement các CRUD endpoints
+   - Thêm custom endpoints
+   - Validation và error handling
+
+2. Triển khai security:
+   - Authentication
+   - Authorization
+   - Role-based access control
+
+3. Viết tests:
+   - Unit tests
+   - Integration tests
+   - Performance tests
+
+4. Thêm documentation:
+   - API documentation
+   - Code documentation
+   - Deployment guide
 
 ## Current Issues
 1. Cần kiểm tra lại tất cả các foreign key constraints

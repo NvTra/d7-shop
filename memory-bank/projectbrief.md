@@ -33,53 +33,95 @@ D7-Shop là một nền tảng thương mại điện tử hiện đại đượ
 
 ### Performance
 - Thời gian phản hồi API < 500ms
-- Hỗ trợ đồng thời 1000+ người dùng
-- Tối ưu hóa database queries
-- Caching cho dữ liệu tĩnh
+- Hỗ trợ đồng thời 1000+ users
+- Xử lý 100+ đơn hàng/phút
+- Cache cho dữ liệu thường xuyên truy cập
 
 ### Security
-- JWT authentication
-- Role-based access control
-- Mã hóa mật khẩu
-- API rate limiting
-- Validation đầu vào
+- Authentication với JWT
+- Role-based authorization
+- Mã hóa dữ liệu nhạy cảm
+- Bảo vệ API endpoints
+- Rate limiting
 
 ### Scalability
 - Microservices architecture
-- Database optimization
-- Caching strategy
 - Load balancing
+- Database sharding
+- Caching layer
 
 ### Reliability
-- Transaction management
-- Error handling
-- Logging và monitoring
-- Backup và recovery
+- High availability (99.9%)
+- Automatic failover
+- Data backup
+- Error logging và monitoring
 
 ## Project Structure
 
-### Backend Services
-1. d7-library
-   - Common components
-   - Database entities
-   - Shared utilities
+### d7-library
+- Common components
+- Shared utilities
+- Database entities
+- Data transfer objects
 
-2. d7-admin-service
-   - Admin dashboard API
-   - Reporting features
-   - System management
+### d7-admin-service
+- Admin API endpoints
+- Admin business logic
+- Admin security
+- Admin reporting
 
-3. d7-enduser-service
-   - Public API
-   - Shopping features
-   - User management
+### d7-enduser-service
+- Public API endpoints
+- Shopping cart logic
+- Order processing
+- Payment integration
 
-### Database Design
+## Development Guidelines
+
+### Code Quality
+- Clean code principles
+- SOLID principles
+- Unit testing
+- Code review
+
+### Database
 - UUID primary keys
 - Audit fields
 - Soft delete
-- Optimized indexes
 - Data validation
+- Index optimization
+
+### Security
+- Input validation
+- SQL injection prevention
+- XSS protection
+- CSRF protection
+
+### Documentation
+- API documentation
+- Code documentation
+- Deployment guide
+- User manual
+
+## Deployment Strategy
+
+### Development
+- Local development environment
+- Development database
+- Mock services
+- Hot reload
+
+### Staging
+- Integration testing
+- Performance testing
+- Security testing
+- User acceptance testing
+
+### Production
+- Blue-green deployment
+- Database migration
+- Monitoring setup
+- Backup strategy
 
 ## Mục tiêu
 Xây dựng một hệ thống thương mại điện tử với kiến trúc microservices, cho phép quản lý và bán sản phẩm trực tuyến.

@@ -33,49 +33,36 @@
 - [x] BaseDTO với audit fields
 - [x] Request/Response DTOs
 - [x] Mappers cho các entity
+- [x] Validation annotations
 
 ## In Progress
 
-### API Layer
-- [ ] API documentation với OpenAPI
-- [ ] API versioning
-- [ ] Rate limiting
+### Controller Layer
+- [ ] BaseController với CRUD endpoints
+- [ ] Custom endpoints cho từng domain
 - [ ] Request validation
+- [ ] Response formatting
 
-### Security
-- [ ] JWT authentication
-- [ ] Role-based authorization
-- [ ] Password encryption
+### Security Layer
+- [ ] Authentication
+- [ ] Authorization
+- [ ] Role-based access control
 - [ ] API security
 
-### Testing
-- [ ] Unit tests cho services
+### Testing Layer
+- [ ] Unit tests
 - [ ] Integration tests
-- [ ] API tests
 - [ ] Performance tests
-
-## Planned Features
-
-### Frontend
-- [ ] Admin dashboard
-- [ ] User interface
-- [ ] Responsive design
-- [ ] Rich text editor
-
-### Integration
-- [ ] Payment gateways
-- [ ] Email service
-- [ ] Cloud storage
-- [ ] Analytics
-
-### Deployment
-- [ ] Docker configuration
-- [ ] CI/CD pipeline
-- [ ] Monitoring setup
-- [ ] Backup strategy
+- [ ] Security tests
 
 ## Known Issues
-1. Cần thêm validation cho các trường số
-2. Cần tối ưu hóa các câu query phức tạp
-3. Cần thêm logging cho các thao tác quan trọng
-4. Cần cải thiện error handling 
+1. Cần thêm logging cho các thao tác quan trọng
+2. Cần cải thiện error handling
+3. Cần thêm documentation cho API
+4. Cần tối ưu hóa performance
+
+## Next Steps
+1. Hoàn thiện controller layer
+2. Triển khai security
+3. Viết tests
+4. Thêm documentation 

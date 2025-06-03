@@ -1,17 +1,47 @@
 # D7-Shop
 
-D7-Shop là một hệ thống backend RESTful API cho ứng dụng thương mại điện tử, được xây dựng bằng Java/Spring Boot.
+D7-Shop là một hệ thống thương mại điện tử được xây dựng với kiến trúc microservices sử dụng Spring Boot. Hệ thống bao gồm các service chính:
+
+- **d7-library**: Thư viện chung chứa entities, repositories và các thành phần dùng chung
+- **d7-admin-service**: Backend cho trang quản trị
+- **d7-enduser-service**: API công khai cho người dùng cuối
 
 ## Yêu cầu hệ thống
 
 - Java 17+ LTS
 - Maven 3.8+
-- PostgreSQL 14+
+- PostgreSQL 15+
 - Git
+
+## Cấu trúc dự án
+
+```
+d7-shop/
+├── d7-library/           # Thư viện chung
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/    # Entities, repositories, DTOs
+│   │   │   └── resources/
+│   │   │       └── db/  # Flyway migrations
+│   │   └── test/
+├── d7-admin-service/     # Backend quản trị
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/    # Controllers, services
+│   │   │   └── resources/
+│   │   └── test/
+├── d7-enduser-service/   # API người dùng
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/    # Controllers, services
+│   │   │   └── resources/
+│   │   └── test/
+└── pom.xml              # Parent POM
+```
 
 ## Cấu hình môi trường
 
-### Biến môi trường có sẵn
+### Biến môi trường
 
 #### Database
 - `DB_URL`: URL kết nối database (mặc định: jdbc:postgresql://localhost:5432/d7shop)
@@ -22,45 +52,17 @@ D7-Shop là một hệ thống backend RESTful API cho ứng dụng thương m�
 - `DB_MIN_IDLE`: Số kết nối idle tối thiểu (mặc định: 5)
 - `DB_IDLE_TIMEOUT`: Thời gian timeout (mặc định: 300000)
 
-#### JPA/Hibernate
-- `JPA_DDL_AUTO`: Chế độ DDL (mặc định: validate)
-- `JPA_SHOW_SQL`: Hiển thị SQL (mặc định: true)
-- `JPA_FORMAT_SQL`: Format SQL (mặc định: true)
-
 #### Security
 - `JWT_SECRET`: Khóa bí mật cho JWT (mặc định: d7shop_development_jwt_secret_key_2024)
 - `JWT_EXPIRATION`: Thời gian hết hạn JWT (mặc định: 86400000)
 - `ADMIN_USERNAME`: Username admin mặc định (mặc định: admin)
 - `ADMIN_PASSWORD`: Password admin mặc định (mặc định: admin)
-- `ADMIN_ROLES`: Roles admin mặc định (mặc định: ADMIN)
 
 #### Server
-- `SERVER_PORT`: Port máy chủ (mặc định: 8080)
-- `SERVER_ERROR_MESSAGE`: Hiển thị message lỗi (mặc định: always)
-- `SERVER_ERROR_BINDING`: Hiển thị binding errors (mặc định: always)
-
-#### Logging
-- `LOG_LEVEL_ROOT`: Log level cho root (mặc định: INFO)
-- `LOG_LEVEL_APP`: Log level cho ứng dụng (mặc định: DEBUG)
-- `LOG_LEVEL_SQL`: Log level cho SQL (mặc định: DEBUG)
-- `LOG_LEVEL_SECURITY`: Log level cho security (mặc định: DEBUG)
-
-### Môi trường phát triển
-
-Trong môi trường development, bạn có thể:
-1. Sử dụng các giá trị mặc định
-2. Override bằng biến môi trường khi cần thiết
-
-### Môi trường test
-
-Để chạy ứng dụng trong môi trường test:
-```bash
-./mvnw spring-boot:run -Dspring.profiles.active=test
-```
+- `ADMIN_SERVICE_PORT`: Port cho admin service (mặc định: 8081)
+- `ENDUSER_SERVICE_PORT`: Port cho enduser service (mặc định: 8082)
 
 ## Thiết lập môi trường phát triển
-
-### Cài đặt thủ công
 
 1. Clone repository:
 ```bash
@@ -69,109 +71,94 @@ cd d7-shop
 ```
 
 2. Cài đặt PostgreSQL:
-- Tạo database 'd7shop'
-- Tạo database 'd7shop_test' cho testing
-- Tạo user 'd7shop_dev' với mật khẩu 'dev_password'
-- Cấp quyền cho user:
 ```sql
-GRANT ALL ON SCHEMA public TO d7shop_dev;
-GRANT ALL ON ALL TABLES IN SCHEMA public TO d7shop_dev;
-GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO d7shop_dev;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO d7shop_dev;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO d7shop_dev;
+-- Tạo database
+CREATE DATABASE d7shop;
+CREATE DATABASE d7shop_test;
+
+-- Tạo user
+CREATE USER d7shop_dev WITH PASSWORD 'dev_password';
+
+-- Cấp quyền
+GRANT ALL ON DATABASE d7shop TO d7shop_dev;
+GRANT ALL ON DATABASE d7shop_test TO d7shop_dev;
 ```
 
-3. Chạy migrations:
+3. Build và chạy các service:
 ```bash
-./mvnw spring-boot:run
+# Build toàn bộ dự án
+mvn clean install
+
+# Chạy admin service
+cd d7-admin-service
+mvn spring-boot:run
+
+# Chạy enduser service
+cd d7-enduser-service
+mvn spring-boot:run
 ```
 
-4. Kiểm tra ứng dụng:
-- API Documentation: http://localhost:8080/swagger-ui.html
-- API Endpoints: http://localhost:8080/api-docs
+## API Documentation
 
-## Cấu trúc thư mục
+### Admin Service (http://localhost:8081)
+- Swagger UI: http://localhost:8081/swagger-ui.html
+- OpenAPI: http://localhost:8081/api-docs
 
-```
-d7-shop/
-├── src/
-│   ├── main/
-│   │   ├── java/          # Mã nguồn Java
-│   │   └── resources/
-│   │       ├── db/        # Flyway migrations
-│   │       ├── static/    # File tĩnh (images, css, js)
-│   │       └── templates/ # Thymeleaf templates
-│   └── test/             # Unit tests
-├── logs/                 # Application logs
-└── target/              # Compiled files
-```
+### Enduser Service (http://localhost:8082)
+- Swagger UI: http://localhost:8082/swagger-ui.html
+- OpenAPI: http://localhost:8082/api-docs
 
-## Cấu hình
+## Database Design
 
-### Database
-- URL: jdbc:postgresql://localhost:5432/d7shop
-- Username: d7shop_dev
-- Password: dev_password
+### Common Fields
+Tất cả các bảng đều có các trường sau:
+- `id`: UUID primary key
+- `created_at`: Timestamp
+- `created_by`: VARCHAR(255)
+- `updated_at`: Timestamp
+- `updated_by`: VARCHAR(255)
+- `deleted_at`: Timestamp
+- `is_deleted`: Boolean
 
-### Logging
-- Log files: ./logs/d7shop.log
-- Archived logs: ./logs/archived/
-- Log levels:
-  - Root: INFO
-  - Application: DEBUG
-  - Spring Security: DEBUG
-  - SQL: DEBUG
+### Migrations
+- V1: Tạo bảng users, categories, user_addresses
+- V2: Tạo bảng products, product_images, product_reviews
+- V3: Tạo bảng carts, orders, payments
+- V4: Thêm dữ liệu mẫu
+- V5: Thêm constraints và indexes
+
+## Development Guidelines
+
+### Git Flow
+- `main`: Production code
+- `develop`: Development code
+- `feature/*`: Tính năng mới
+- `bugfix/*`: Sửa lỗi
+- `release/*`: Chuẩn bị release
+
+### Code Style
+- Clean code principles
+- SOLID principles
+- Unit testing
+- Code review
 
 ### Security
-- Default admin account:
-  - Username: admin
-  - Password: admin
-  - Role: ADMIN
+- JWT authentication
+- Role-based authorization
+- API security
+- Input validation
 
-### API Documentation
-- Swagger UI: http://localhost:8080/swagger-ui.html
-- OpenAPI Spec: http://localhost:8080/api-docs
-
-## Phát triển
-
-### Thêm migrations mới
-1. Tạo file migration trong `src/main/resources/db/migration`
-2. Đặt tên theo format: `V{version}__{description}.sql`
-3. Chạy `./mvnw spring-boot:run` để áp dụng migrations
+## Monitoring & Logging
 
 ### Logging
-- Cấu hình logging trong `src/main/resources/logback-spring.xml`
-- Log files được lưu trong thư mục `logs`
-- Log files được tự động xoay vòng khi đạt 10MB
-- Giữ logs trong 30 ngày
-- Tổng dung lượng logs tối đa 3GB
+- Log files: ./logs/
+- Log rotation
+- Archived logs: ./logs/archived/
 
-## Công nghệ sử dụng
-
-- Spring Boot 3+
-- Spring Security với JWT
-- Spring Data JPA & Hibernate
-- PostgreSQL
-- Flyway
-- Maven
-- Thymeleaf
-
-## Tài liệu API
-
-API documentation có sẵn tại: `http://localhost:8080/swagger-ui.html`
-
-## Môi trường
-
-- Development: `application.yml`
-- Testing: `application-test.yml`
-- Production: `application-prod.yml`
-
-## Quy tắc phát triển
-
-1. Sử dụng Git Flow
-2. Tuân thủ code style
-3. Viết unit tests
-4. Cập nhật documentation
+### Monitoring
+- Health checks
+- Application metrics
+- Performance monitoring
 
 ## Liên hệ
 

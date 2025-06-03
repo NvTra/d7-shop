@@ -51,24 +51,69 @@
 ### Database Design
 - UUID primary keys
 - Audit fields (created_at, updated_at, etc.)
-- Soft delete with deleted_at
+- Soft delete pattern
 - Optimized indexes
-- Foreign key constraints
-- Check constraints for numeric fields
+- Data validation constraints
 
 ### Security
-- JWT based authentication
-- Role based authorization
+- JWT authentication
+- Role-based authorization
 - Password encryption
 - API security
-- CORS configuration
 
-### API Design
-- RESTful principles
-- OpenAPI documentation
-- Versioning
-- Rate limiting
-- Request validation
+### Testing
+- Unit tests
+- Integration tests
+- Performance tests
+- Security tests
+
+## Development Practices
+
+### Code Quality
+- Clean code principles
+- SOLID principles
+- Design patterns
+- Code reviews
+
+### Version Control
+- Git flow
+- Feature branches
+- Pull requests
+- Code reviews
+
+### Documentation
+- API documentation
+- Code documentation
+- Architecture documentation
+- Deployment guide
+
+### CI/CD
+- Automated builds
+- Unit tests
+- Integration tests
+- Deployment automation
+
+## Environment Setup
+
+### Development
+- JDK 17
+- PostgreSQL 15
+- Maven
+- Git
+- Docker
+- IDE (IntelliJ/Eclipse)
+
+### Testing
+- JUnit 5
+- Mockito
+- TestContainers
+- Postman
+
+### Production
+- Docker containers
+- Load balancer
+- Monitoring
+- Logging
 
 ## Development Environment
 
