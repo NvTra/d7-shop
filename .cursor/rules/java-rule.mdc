@@ -28,11 +28,42 @@ alwaysApply: false
 
 ### **Quy ước Đặt Tên**
 
+* Tuân thủ Naming convention cho java
 * Dùng **PascalCase** cho tên lớp (ví dụ: `UserController`, `OrderService`).
 * Dùng **camelCase** cho tên phương thức và biến (ví dụ: `findUserById`, `isOrderValid`).
 * Dùng **ALL\_CAPS** cho hằng số (ví dụ: `MAX_RETRY_ATTEMPTS`, `DEFAULT_PAGE_SIZE`).
 
+* Lưu ý:
+	* Tên biến, tên class thường là danh từ đại diện cho một đối tượng trong thế giới thực, không bắt đầu bằng số hoặc kí tự đặc biệt.
+	* Tên interface mang xu hướng mô tả cho một hoạt động, tính chất nào đó của đối tượng.
+	* Tên hàm thường bắt đầu với động từ, và diễn tả chức năng chính của hàm.
+	* Không nên viết tắt, ký hiệu khó hiểu, không có ý nghĩa, không nên dùng các con số để đại diện cho nghiệp vụ: x, a,c, 122, ...
+
+
 ---
+
+### **Quy tắc xuống dòng**
+
+* Với một hàm nhiều cấp thì nên xuống dòng đối với từng cấp.
+* Các đoạn code cùng một cấp nên được viết ở cùng một cột, khi xuống dòng nên bắt đầu cùng cấp với dòng phía trên.
+* Xuống dòng cho các toán tử như:  ?, *, -, +
+
+---
+
+### **Quy tắc comment**
+
+* Bản thân code chính là tài liệu quý giá nhất.
+* Chỉ thêm comment khi cần thiết, các chức năng phức tạp, khó hiểu.
+* Comment nên dùng để giải thích tại sao chứ không phải diễn giải lại cách làm.
+* Viết comment không cần quá cầu kì, càng đơn giản càng tốt.
+* Nhiều comment in-line nên canh lề ngay với dòng code phía dưới.
+ 
+---
+
+### **Package**
+
+* Tên package nên được viết thường, với các dự án nhỏ chỉ có một vài package, chúng ta chỉ cần đặt cho chúng những cái tên đơn giản nhưng có ý nghĩa. package pokeranalyzer package mycalculator 
+* Đối với các dự án lớn, các package có thể lồng vào nhau nên thường được chia nhỏ, thường sẽ bắt đầu với domain của công ty trước. package com.mycompany.utilities package org.bobscompany.application.userinterface 
 
 ### **Sử dụng Java và Spring Boot**
 
